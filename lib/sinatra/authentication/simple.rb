@@ -21,15 +21,6 @@ module Sinatra
         end
       end
 
-      class FailureApp
-        def call(env)
-          env['BASE_URI'] = env['BASE_URI'] || '/'
-          uri = env['REQUEST_URI']
-          #puts 'failure: ' + env['REQUEST_METHOD'] + ' ' + uri
-          [302, {'Location' => "#{env['BASE_URI']}error?uri=" + ERB::Util.u(uri)}, '']
-        end
-      end
-
       module Helpers
         def warden
           request.env['warden']
@@ -88,7 +79,7 @@ module Sinatra
 
         app.use Warden::Manager do |manager|
           manager.default_strategies :custom_login_strategy
-          manager.failure_app = FailureApp
+          manager.failure_app = app
         end
       end
     end
